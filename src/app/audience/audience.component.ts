@@ -14,6 +14,7 @@ export class AudienceComponent implements OnInit {
     constructor(private authenticationService: AuthenticationService,
         private audienceService: AudienceService) {
             this.currentUser = this.authenticationService.currentUserValue;
+            console.log('all audiences for user with role:', this.currentUser.role, 'are', this.audiences);
         }
 
     ngOnInit(): void {
@@ -25,17 +26,5 @@ export class AudienceComponent implements OnInit {
         this.audienceService.getAll()
         .pipe(first())
         .subscribe(audiences => this.audiences = audiences);
-    }
-
-    showDialog(){
-        let modal_t  = document.getElementById('modal_1')
-        modal_t.classList.remove('hhidden')
-        modal_t.classList.add('sshow');
-    }
-
-    closeDialog() {
-        let modal_t  = document.getElementById('modal_1')
-        modal_t.classList.remove('sshow')
-        modal_t.classList.add('hhidden');
     }
 }

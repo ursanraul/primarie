@@ -1,18 +1,15 @@
 ﻿<h1>Hi {{currentUser.firstName}}!</h1>
-<h3>All registered users:</h3>
+
+<h5>In this portal you can manage audiences and user rights.</h5> 
 <ul>
-    <li *ngFor="let user of users">
-        <h3>
-            Username: {{user.username}}  - <a *ngIf="currentUser.role === Admin && currentUser.username !== user.username" (click)="deleteUser(user.id)" class="text-danger">Delete</a>
-        </h3>
-        <h5>
-            First Name: {{user.firstName}}
-        </h5>
-        <h5>
-            Last Name: {{user.lastName}}
-        </h5>
-        <h5>
-            Role: {{user.role}}
-        </h5>
+    <li>
+        As a User / Functionar public you can add, view and manage audiences.
+    </li>
+    <li>
+        As an Admin you can add audience, view audience, solve audience and manage user accounts by deleteing them.
+    </li>
+    <li>
+        As a User / Cetatean you can add audience.
     </li>
 </ul>
+

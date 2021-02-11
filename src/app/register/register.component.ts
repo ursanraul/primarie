@@ -25,7 +25,6 @@ export class RegisterComponent implements OnInit {
         }
 
         this.retrieveRoles();
-        //console.log(this.roles);
     }
 
     ngOnInit() {
@@ -40,7 +39,6 @@ export class RegisterComponent implements OnInit {
 
     onSelectRole(event){
         if(event.target.value){
-            console.log(event.target.value);
         }
     }
 
@@ -68,9 +66,6 @@ export class RegisterComponent implements OnInit {
         if (this.registerForm.invalid) {
             return;
         }
-
-        console.log(this.registerForm);
-
 
         this.loading = true;
         this.userService.register(this.registerForm.value)

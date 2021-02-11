@@ -6,6 +6,7 @@ import { Audience } from '@/_models/audience';
 
 // array in local storage for registered users
 let users = JSON.parse(localStorage.getItem('users')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || [];
 let audiences = JSON.parse(localStorage.getItem('audiences')) || [];
 
 @Injectable()
@@ -51,13 +52,22 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 username: user.username,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                token: 'fake-jwt-token'
+                token: 'fake-jwt-token',
+                role: user.role
             })
         }
 
         function getAudiences(){
             if (!isLoggedIn()) return unauthorized();
-            return ok(audiences.length > 0 ? audiences : Array<Audience>());
+
+            let loggedUser = users.find(x => x.username === currentUser.username);
+            if (loggedUser.role === 'Admin' || loggedUser.role === 'Functionar public'){
+                return ok(audiences.length > 0 ? audiences : Array<Audience>());
+            } else {
+                var currentUserAudiences = audiences.filter(x => x.user.username === loggedUser.username);
+                console.log('current user audiences', currentUserAudiences);
+                return ok(currentUserAudiences.length > 0 ? currentUserAudiences : Array<Audience>());
+            }
         }
 
         function registerAudience() {
@@ -75,6 +85,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function register() {
             const user = body
+            console.log('body', body);
 
             if (users.find(x => x.username === user.username)) {
                 return error('Username "' + user.username + '" is already taken')

@@ -15,6 +15,7 @@ import { RegisterComponent } from './register';
 import { AlertComponent } from './_components';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { AudienceComponent } from './audience/audience.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import { AudienceComponent } from './audience/audience.component';
         ReactiveFormsModule,
         HttpClientModule,
         appRoutingModule,
+        NgbModule
     ],
     declarations: [
         AppComponent,

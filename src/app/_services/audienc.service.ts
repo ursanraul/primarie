@@ -10,4 +10,8 @@ export class AudienceService {
     getAll() {
         return this.http.get<Audience[]>(`${config.apiUrl}/audiences`);
     }
+
+    post(audience: Audience) {
+        return this.http.post(`${config.apiUrl}/audiences`, audience);
+    }
 }

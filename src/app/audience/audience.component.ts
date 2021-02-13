@@ -9,12 +9,11 @@ import { first } from 'rxjs/operators';
 export class AudienceComponent implements OnInit {
     currentUser: User;
     audiences: Array<Audience>;
-    audience: Audience;
+    audienceMode = false;
 
     constructor(private authenticationService: AuthenticationService,
         private audienceService: AudienceService) {
             this.currentUser = this.authenticationService.currentUserValue;
-            console.log('all audiences for user with role:', this.currentUser.role, 'are', this.audiences);
         }
 
     ngOnInit(): void {
@@ -25,6 +24,31 @@ export class AudienceComponent implements OnInit {
     loadAllAudiences() {
         this.audienceService.getAll()
         .pipe(first())
-        .subscribe(audiences => this.audiences = audiences);
+        .subscribe(audiences => {
+            this.audiences = audiences;
+            console.log(audiences);
+        });
+    }
+
+    addAudience() {
+        this.audienceMode = true;
+    }
+
+    closeAudienceMode(){
+        this.audienceMode = false;
+    }
+
+    saveAudience(value){
+        let audience = {
+            user: this.currentUser,
+            description: value
+        } as Audience;
+        
+        this.audienceService.post(audience)
+        .pipe(first())
+        .subscribe(response => {
+            this.closeAudienceMode();
+            this.loadAllAudiences();
+        });
     }
 }

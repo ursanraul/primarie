@@ -3,10 +3,11 @@ import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTT
 import { Observable, of, throwError } from 'rxjs';
 import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 import { Audience } from '@/_models/audience';
+import { User } from '@/_models';
 
 // array in local storage for registered users
 let users = JSON.parse(localStorage.getItem('users')) || [];
-let currentUser = JSON.parse(localStorage.getItem('currentUser')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
 let audiences = JSON.parse(localStorage.getItem('audiences')) || [];
 
 @Injectable()
@@ -34,8 +35,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 case url.endsWith('/users/getRoles') && method === 'GET':
                         return getRoles();
                 case url.endsWith('/audiences') && method === 'GET':
+                    console.log('get all audiences hitted!!!');
                         return getAudiences();
-                case url.endsWith('/audiences/register') && method === 'POST':
+                case url.endsWith('/audiences') && method === 'POST':
                         return registerAudience();
                 default:
                     // pass through any requests not handled above
@@ -47,6 +49,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             const { username, password } = body;
             const user = users.find(x => x.username === username && x.password === password);
             if (!user) return error('Username or password is incorrect');
+
+            localStorage.setItem('currentUser', JSON.stringify(user));
             return ok({
                 id: user.id,
                 username: user.username,
@@ -54,17 +58,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 lastName: user.lastName,
                 token: 'fake-jwt-token',
                 role: user.role
-            })
+            });
         }
 
         function getAudiences(){
             if (!isLoggedIn()) return unauthorized();
 
-            let loggedUser = users.find(x => x.username === currentUser.username);
-            if (loggedUser.role === 'Admin' || loggedUser.role === 'Functionar public'){
+            if (currentUser.role === 'Admin' || currentUser.role === 'Functionar public'){
                 return ok(audiences.length > 0 ? audiences : Array<Audience>());
             } else {
-                var currentUserAudiences = audiences.filter(x => x.user.username === loggedUser.username);
+                var currentUserAudiences = audiences.filter(x => x.user.username === currentUser.username);
                 console.log('current user audiences', currentUserAudiences);
                 return ok(currentUserAudiences.length > 0 ? currentUserAudiences : Array<Audience>());
             }
@@ -73,13 +76,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function registerAudience() {
             const audience = body;
 
-            if(audiences.find(x => x.user.username === audience.user.username)) {
-                return error('Cannot add duplicate audience for user with username: ' + audience.user.username);
-            }
-
             audience.id = audiences.length ? Math.max(...audiences.map(x => x.id)) + 1: 1;
             audiences.push(audience);
-            localStorage.setItem('audiences', JSON.stringify(audience));
+            localStorage.setItem('audiences', JSON.stringify(audiences));
             return ok();
         }
 

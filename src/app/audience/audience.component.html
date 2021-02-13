@@ -1,9 +1,9 @@
 <span style="display: flex; justify-content: space-between;">
   <h1>Audiences</h1>
-  <button (click)="showDialog()">Add Audience</button>
+  <button class="btn btn-success" *ngIf="audienceMode == false" (click)="addAudience()">Add Audience</button>
 </span>
 
-<div *ngIf="audiences.length > 0">
+<div *ngIf="audiences.length > 0 && !audienceMode">
 <table class="table table-striped">
   <thead>
   <tr>
@@ -25,4 +25,12 @@
   </tbody>
 </table>
 </div>
-<h3 *ngIf="audiences.length === 0">No Audiences</h3>
+<h3 *ngIf="audiences.length === 0">No Audiences found.</h3>
+
+<div *ngIf="audienceMode">
+  <label>Description of Audience:</label>
+  <textarea #description name="description" rows="4" cols="50"></textarea>
+  <br><br>
+    <button class="btn btn-success" type="submit" value="Save" (click)="saveAudience(description.value)">Save</button>
+    <button class="btn btn-danger" (click)="closeAudienceMode()">Cancel</button>
+</div>

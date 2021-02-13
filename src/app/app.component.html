@@ -5,6 +5,7 @@
         <a class="nav-item nav-link" *ngIf="currentUser.role === 'Admin'" routerLink="/user-management">User Management</a>
         <a class="nav-item nav-link" routerLink="/audience">Audience</a>
         <a class="nav-item nav-link" (click)="logout()">Logout</a>
+        <h5 class="nav-item nav-link" style="float: right">Hello {{currentUser.username}}</h5>
     </div>
 </nav>
 
